@@ -1,5 +1,5 @@
 <template>
-  <div class="login_context">
+  <div id="login" class="login_context">
     <div class="login_box">
       <el-button
         type="warning"
@@ -9,7 +9,7 @@
         @click="$router.push('/register')"
         >注&nbsp;&nbsp;&nbsp;册</el-button
       >
-      <div class="title">柠檬班接口自动化测试平台</div>
+      <div class="title">接口自动化测试平台</div>
       <!-- label-width是用占位的 -->
       <el-form
         ref="loginRef"
@@ -52,88 +52,64 @@
 </template>
 
 <script>
-import * as account from '@/api/account.js'
-
+import * as accountApi from "@/api/account";
+import * as cookies from "@/util/cookies";
 export default {
+  name: "Login",
   data() {
     return {
-      // 登录的数据对象
-      user: {
-        username: '',
-        password: '',
-      },
+      userResult: {},
+      user: {},
       status: false,
       rulesLogin: {
         // 验证用户名是否合法
         username: [
-          { required: true, message: '请输入登录用户名', trigger: 'blur' },
+          { required: true, message: "请输入登录用户名", trigger: "blur" },
         ],
         // 验证密码是否合法
         password: [
-          { required: true, message: '请输入登录密码', trigger: 'blur' },
+          { required: true, message: "请输入登录密码", trigger: "blur" },
         ],
       },
-    }
+    };
   },
-  mounted() {
-    //给window对象绑定keydown事件
-    window.addEventListener('keydown', this.keyDown)
-    //获取记住的用户名
-    const username = window.localStorage.getItem('username')
-    if (username) {
-      this.user.username = username
-      this.status = true
-    }
-  },
-  //Vue生命周期销毁钩子
-  destroyed() {
-    //给window对象移除keydown事件
-    window.removeEventListener('keydown', this.keyDown, false)
+  created() {
+    // //加载初始数据
+    // this.login();
   },
   methods: {
     login() {
-      account.login(this.user).then((response) => {
-        let result = response.data
-        //登录失败
-        if (result.code !== 0) {
+      // let user = { username: "admin", password: "123456" };
+      accountApi.login(this.user).then((result) => {
+        let responseData = result.data;
+        if (responseData.code == 0) {
+          // this.userResult = responseData.data;
+          // 登录成功
+          // 1.提示
           this.$message({
-            message: result.message,
-            type: 'error',
-          })
-          return
+            message: "登录成功",
+            type: "success",
+          });
+          // 2.写登录成功cookie
+          cookies.setCurrentUser(responseData.data);
+          // 3.跳转到首页
+          this.$router.push("/");
+        } else {
+          //登录失败，给出对应错误提示
+          this.$message({
+            message: responseData.message,
+            type: "warning",
+          });
+          // console.log(responseData.message);
         }
+      });
+      //已经在util/request.js定义了通用的响应异常拦截了，使用通用能满足就不用新定义了
+      // }).catch((err) => {
 
-        //登录成功
-        let user = result.data
-        //设置当前用户
-        // this.$store.commit('setCurrentUser',user)
-        //【JWT】1、登录时将登录信息存放到本地LocalStorage
-        //设置当前用户
-        window.localStorage.setItem('current-user', JSON.stringify(user))
-        //设置当前用户，辅助函数写法，带别名
-        // this.setU(user)
-        //如果当前有默认选择项目，则跳转到[项目首页]；否则，跳转到[所有项目]页
-        let redirect = '/project'
-        let currentProject = this.$store.getters.getCurrentProject
-        if (!currentProject || currentProject.username != user.username) {
-          redirect = '/'
-        }
-        this.$router.push(redirect)
-
-        if (this.status) {
-          window.localStorage.setItem('username', user.username)
-        }
-      })
-    },
-    //按键事件监听
-    keyDown(e) {
-      //如果按下的是回车键，直接登录
-      if (e.keyCode == 13) {
-        this.login()
-      }
+      // });
     },
   },
-}
+};
 </script>
 
 <style scoped>

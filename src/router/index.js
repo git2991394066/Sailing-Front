@@ -1,86 +1,71 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import * as cookies from '@/util/cookies'
+import Layout from '@/layout';
+
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    redirect: '/user'
-  },
-  // {
-  //   path: '/about',
-  //   name: 'About',
-  //   component: () => import('@/views/About.vue')
-  // },
-  {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/Login.vue')
+    component: () => import('@/views/Login.vue'),
+    meta: {
+      title: '登录'
+    }
   },
   {
     path: '/register',
     name: 'Register',
-    component: () => import('@/views/Register.vue')
+    component: () => import('@/views/Register.vue'),
+    meta: {
+      title: '注册'
+    }
   },
   {
     path: '/',
-    name: 'Layout',
-    component: () => import('@/layout'),
+    name: 'Home',
+    redirect: '/project'
+  },
+  {
+    path: '/',
+    component: Layout,
     children: [
       {
-        path: '/project',
+        path: 'Project',
         name: 'Project',
         component: () => import('@/views/Project.vue'),
-        //配置需要有cookies才可以访问
         meta: {
-          needAuth: true
+          title: '项目首页',
+          requireAuth: true
         }
       },
       {
-        path: '/user',
+        path: 'user',
         name: 'User',
         component: () => import('@/views/User.vue'),
-        //配置需要有cookies才可以访问
         meta: {
-          needAuth: true
+          title: '用户管理',
+          requireAuth: true
         }
       }
     ]
-  },
-  // {
-  //   path: '/project',
-  //   name: 'Project',
-  //   component: () => import('@/views/Project.vue')
-  // },
-  // {
-  //   path: '/register',
-  //   name: 'Register',
-  //   component: () => import('@/views/Register.vue')
-  // },
-  // {
-  //   path: '/user',
-  //   name: 'User',
-  //   component: () => import('@/views/User.vue')
-  // }
+  }
 ]
 
 const router = new VueRouter({
   // mode: 'history',
-  // base: process.env.BASE_URL,
+  base: process.env.BASE_URL,
   routes
 })
-//路由前拦截
+
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(item => item.meta.needAuth == true)) {
-    //表示需要进行路由鉴权
-    let currentUser = cookies.getCurrentUser()
+  if (to.matched.some(record => record.meta.requireAuth)) {
+    //【JWT】2、路由时，使用LocalStorage中的用户信息进行鉴权
+    let currentUser = window.localStorage.getItem('current-user')
+    console.log(currentUser)
     if (currentUser) {
-      //有登录，路由到下一个页面
       next()
     } else {
-      //未登录，跳转到登录
       next({
         path: '/login',
         redirect: to.fullPath

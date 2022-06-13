@@ -151,9 +151,16 @@
       >
       </el-pagination>
     </el-card>
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="50%">
+    <el-dialog
+      :title="currentId ? '修改' : '新增'"
+      :visible.sync="dialogVisible"
+      width="50%"
+      style="text-align: center"
+    >
       <!-- 通过子组件触发事件，来调用父组件内的方法 -->
+      <!-- vue有缓存，通过v-if="dialogVisible"来重新加载，可以解决编辑不同id都显示编辑时第一个id的数据 -->
       <user-edit
+        v-if="dialogVisible"
         :id="currentId"
         @callbackForCancel="callbackForCancel"
         @callbackForSave="callbackForSave"
@@ -178,8 +185,8 @@ export default {
   data() {
     return {
       users: [
-        { id: 1, username: "zs", name: "张三" },
-        { id: 2, username: "ls", name: "李四" },
+        // { id: 1, username: "zs", name: "张三" },
+        // { id: 2, username: "ls", name: "李四" },
       ],
       search: {
         pageIndex: 1,
@@ -240,6 +247,54 @@ export default {
     callbackForSave() {
       this.dialogVisible = false;
       this.getUsers();
+    },
+    //删除
+    remove(id) {
+      this.$confirm("确定删除吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          userApi.remove(id).then((result) => {
+            let responseData = result.data;
+            if (responseData.code == 0) {
+              this.$message({
+                message: "删除成功",
+                type: "success",
+              });
+              //重新加载数据
+              this.getUsers();
+            } else {
+              this.$message({
+                message: responseData.message,
+                type: "warning",
+              });
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+      // userApi.remove(id).then((result) => {
+      //   let responseData = result.data;
+      //   if (responseData.code == 0) {
+      //     this.$message({
+      //       message: "删除成功",
+      //       type: "success",
+      //     });
+      // //重新加载数据
+      //         this.getUsers()
+      //   } else {
+      //     this.$message({
+      //       message: responseData.message,
+      //       type: "warning",
+      //     });
+      //   }
+      // })
     },
   },
 };

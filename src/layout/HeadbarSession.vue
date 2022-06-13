@@ -1,16 +1,16 @@
 <template>
-  <div id="headerbar" class="header">
+  <div id="headbar" class="header">
     <!-- 【左侧】折叠按钮，使用Vuex状态切换；而且，如果是项目选择页，不显示按钮 -->
     <div
       class="collapse-btn"
-      @click="$store.commit('toggleCollapse')"
+      @click="$store.commit('setCollapse')"
       v-if="$route.path.toLowerCase() != '/allproject'"
     >
       <i v-if="!$store.getters.getCollapse" class="el-icon-notebook-2"></i>
       <i v-else class="el-icon-notebook-1"></i>
     </div>
     <!--【中间】软件标题-->
-    <div class="logo">柠檬班接口自动化测试平台</div>
+    <div class="logo">接口自动化测试平台</div>
     <!--【右侧】登录人信息-->
     <div class="header-right">
       <div class="header-user-con">
@@ -31,6 +31,7 @@
         <!-- 用户名下拉菜单 -->
         <el-dropdown class="user-name" trigger="click" @command="operate">
           <span class="el-dropdown-link">
+            <!-- {{ $store.getters.getCurrentUser.name }} -->
             {{ user.name }}
             <i class="el-icon-caret-bottom"></i>
           </span>
@@ -48,58 +49,59 @@
   </div>
 </template>
 <script>
+import * as cookies from "@/util/cookies";
 export default {
-  name: 'Headbar',
+  name: "Headbar",
   data() {
     return {
-        fullscreen: false,
-      message: 2,
-      user:{}
-    }
+      user: {},
+      fullscreen: false,
+    };
   },
   created() {
-    //【JWT】3、获取登录信息
-    this.user = JSON.parse(window.localStorage.getItem("current-user"))
+    this.user = cookies.getCurrentUser();
   },
   methods: {
-      //下拉菜单操作
+    //下拉菜单操作
     operate(command) {
-      if (command == 'changeProject') {
-        this.$router.push('/allProject')
-      } else if (command == 'logout') {
-        this.$store.commit('removeCurrentUser')
-        this.$router.push('/login')
+      if (command == "changeProject") {
+        this.$router.push("/allProject");
+      } else if (command == "logout") {
+        // 1.移除cookies
+        cookies.removeCurrentUser();
+        // 2.跳转到登录页
+        this.$router.push("/login");
       }
     },
     // 全屏
     handleFullScreen() {
-      let element = document.documentElement
+      let element = document.documentElement;
       if (this.fullscreen) {
         if (document.exitFullscreen) {
-          document.exitFullscreen()
+          document.exitFullscreen();
         } else if (document.webkitCancelFullScreen) {
-          document.webkitCancelFullScreen()
+          document.webkitCancelFullScreen();
         } else if (document.mozCancelFullScreen) {
-          document.mozCancelFullScreen()
+          document.mozCancelFullScreen();
         } else if (document.msExitFullscreen) {
-          document.msExitFullscreen()
+          document.msExitFullscreen();
         }
       } else {
         if (element.requestFullscreen) {
-          element.requestFullscreen()
+          element.requestFullscreen();
         } else if (element.webkitRequestFullScreen) {
-          element.webkitRequestFullScreen()
+          element.webkitRequestFullScreen();
         } else if (element.mozRequestFullScreen) {
-          element.mozRequestFullScreen()
+          element.mozRequestFullScreen();
         } else if (element.msRequestFullscreen) {
           // IE11
-          element.msRequestFullscreen()
+          element.msRequestFullscreen();
         }
       }
-      this.fullscreen = !this.fullscreen
+      this.fullscreen = !this.fullscreen;
     },
   },
-}
+};
 </script>
 <style scoped>
 .header {

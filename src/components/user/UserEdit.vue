@@ -52,13 +52,14 @@
     </el-form>
     {{ id }}
     <!-- 增加根据返回的后端结果，处理是否关闭弹窗。所以把这块放到组件里，添加对应逻辑  -->
-    <span slot="footer" class="dialog-footer">
+    <span slot="footer" class="dialog-footer" style="text-align: center">
       <el-button @click="cancel">取 消</el-button>
       <el-button type="primary" @click="save">确 定</el-button>
     </span>
   </div>
 </template>
 <script>
+import * as userApi from "@/api/user";
 export default {
   name: "UserEdit",
   //vue文件通过props接收相应的数据做方法入参
@@ -73,17 +74,77 @@ export default {
       },
     };
   },
+  created() {
+    //加载初始数据
+    this.getInitData();
+  },
   methods: {
-    //  通过子组件触发事件，来调用父组件内的方法
-
+    //获取初始数据
+    getInitData() {
+      this.getUser();
+    },
+    //获取当前用户信息
+    getUser() {
+      if (this.id) {
+        userApi.getById(this.id).then((result) => {
+          let responseData = result.data;
+          if (responseData.code == 0) {
+            this.user = responseData.data;
+          } else {
+            this.$message({
+              message: responseData.message,
+              type: "warning",
+            });
+          }
+        });
+      }
+    },
+    // 通过子组件触发事件，来调用父组件内的方法
     //取消
     cancel() {
       this.$emit("callbackForCancel");
     },
     //保存
     save() {
-      //保存成功，关闭父页面弹窗
-      this.$emit("callbackForSave");
+      //编辑修改的情况
+      if (this.id) {
+        userApi.update(this.user).then((result) => {
+          let responseData = result.data;
+          if (responseData.code == 0) {
+            this.$message({
+              message: "修改成功",
+              type: "success",
+            });
+            //保存成功，关闭父页面弹窗
+            this.$emit("callbackForSave");
+          } else {
+            this.$message({
+              message: responseData.message,
+              type: "warning",
+            });
+          }
+        });
+      } else {
+        //新增的情况
+        userApi.create(this.user).then((result) => {
+          let responseData = result.data;
+          if (responseData.code == 0) {
+            this.$message({
+              message: "新增成功",
+              type: "success",
+            });
+            //保存成功，关闭父页面弹窗
+            this.$emit("callbackForSave");
+          } else {
+            this.$message({
+              message: responseData.message,
+              type: "warning",
+            });
+          }
+        });
+      }
+      // //保存成功，关闭父页面弹窗
+      // this.$emit("callbackForSave");
     },
   },
 };
