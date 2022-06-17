@@ -7,7 +7,7 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    redirect: '/user'
+    redirect: '/project'
   },
   // {
   //   path: '/about',
@@ -25,6 +25,15 @@ const routes = [
     component: () => import('@/views/Register.vue')
   },
   {
+    path: '/allproject',
+    name: 'AllProject',
+    component: () => import('@/views/AllProject.vue'),
+    meta: {
+      title: '所有项目',
+      requireAuth: true
+    }
+  },
+  {
     path: '/',
     name: 'Layout',
     component: () => import('@/layout'),
@@ -36,6 +45,15 @@ const routes = [
         //配置需要有cookies才可以访问
         meta: {
           needAuth: true
+        }
+      },
+      {
+        path: 'interface',
+        name: 'Interface',
+        component: () => import('@/views/Interface.vue'),
+        meta: {
+          title: '接口管理',
+          requireAuth: true
         }
       },
       {
