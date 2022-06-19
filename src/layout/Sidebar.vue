@@ -31,6 +31,8 @@
 </template>
 <script>
 import { menu } from "@/layout/menu";
+import * as cookies from "@/util/cookies";
+
 export default {
   name: "Sidebar",
   data() {
@@ -52,8 +54,18 @@ export default {
   },
   methods: {
     checkRight(needRoles) {
-      console.log(needRoles);
-      return true;
+      let hasRight = false;
+      let user = cookies.getCurrentUser();
+      //判读当前用户的角色是否匹配当前菜单的角色
+      user.roles.forEach((item) => {
+        let index = needRoles.indexOf(item);
+        if (index >= 0) {
+          hasRight = true;
+          return;
+        }
+      });
+      return hasRight;
+      // console.log(needRoles);
     },
   },
 };

@@ -23,7 +23,8 @@ export default new Vuex.Store({
     //当前拷贝的用例，用于复制
     copyTestCase: null,
     //快捷标签列表
-    tagsList: []
+    tagsList: [],
+
   },
   getters: {
     //获取菜单展开状态
@@ -54,7 +55,8 @@ export default new Vuex.Store({
     },
     getTagsList: state => {
       return state.tagsList
-    }
+    },
+
   },
   mutations: {
     //切换菜单展开状态
@@ -96,7 +98,8 @@ export default new Vuex.Store({
     },
     setTagsList(state, tagsList) {
       state.tagsList = tagsList
-    }
+    },
+
   },
   actions: {
   },

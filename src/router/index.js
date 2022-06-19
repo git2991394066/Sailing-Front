@@ -57,6 +57,16 @@ const routes = [
         }
       },
       {
+        path: 'testCase',
+        name: 'TestCase',
+        component: () => import('@/views/TestCase.vue'),
+        meta: {
+          title: '用例管理',
+          requireAuth: true
+        }
+      }
+      ,
+      {
         path: '/user',
         name: 'User',
         component: () => import('@/views/User.vue'),
