@@ -15,7 +15,7 @@
     <!-- 左侧 -->
     <sidebar></sidebar>
     <div class="content-box">
-      <!-- <tags></tags> -->
+      <tags></tags>
       <div class="content">
         <transition name="move" mode="out-in">
           <!-- keep-alive 用于切换页面时，缓存页面编辑中的数据，再次返回界面数据还在 -->
@@ -31,16 +31,28 @@
 <script>
 import Headbar from "@/layout/Headbar.vue";
 import Sidebar from "@/layout/Sidebar.vue";
+import Tags from "./Tags.vue";
 export default {
   name: "layout",
   components: {
     Headbar,
     Sidebar,
+    Tags,
   },
   data() {
     return {
-      tagsList: [],
+      // tagsList: [],
     };
+  },
+  computed: {
+    tagsList() {
+      //需要缓存的页面
+      let needCacheRouters = ["TestCase"];
+      //返回全局状态快捷标签的名称，与组件export中name一致时，当router-view中使用include包含，将会缓存页面
+      return this.$store.getters.getTagsList
+        .filter((item) => needCacheRouters.indexOf(item.name) >= 0)
+        .map((item) => item.name);
+    },
   },
 };
 </script>

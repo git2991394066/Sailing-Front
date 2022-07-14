@@ -7,6 +7,13 @@ export function query(params) {
     params: params
   })
 }
+//查询所有
+export function queryAll() {
+  return request({
+    url: '/user/queryAll',
+    method: 'get'
+  })
+}
 // 根据ID获取
 export function getById(id) {
   return request({

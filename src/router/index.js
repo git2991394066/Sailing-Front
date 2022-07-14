@@ -4,11 +4,7 @@ import * as cookies from '@/util/cookies'
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    redirect: '/project'
-  },
+
   // {
   //   path: '/about',
   //   name: 'About',
@@ -17,12 +13,23 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/Login.vue')
+    component: () => import('@/views/Login.vue'),
+    meta: {
+      title: '登录'
+    }
   },
   {
     path: '/register',
     name: 'Register',
-    component: () => import('@/views/Register.vue')
+    component: () => import('@/views/Register.vue'),
+    meta: {
+      title: '注册'
+    }
+  },
+  {
+    path: '/',
+    name: 'Home',
+    redirect: '/allProject'
   },
   {
     path: '/allproject',
@@ -39,12 +46,23 @@ const routes = [
     component: () => import('@/layout'),
     children: [
       {
-        path: '/project',
+        path: 'project',
         name: 'Project',
         component: () => import('@/views/Project.vue'),
         //配置需要有cookies才可以访问
         meta: {
+          title: '项目首页',
           needAuth: true
+        }
+      },
+
+      {
+        path: 'testCase',
+        name: 'TestCase',
+        component: () => import('@/views/TestCase.vue'),
+        meta: {
+          title: '用例管理',
+          requireAuth: true
         }
       },
       {
@@ -57,24 +75,51 @@ const routes = [
         }
       },
       {
-        path: 'testCase',
-        name: 'TestCase',
-        component: () => import('@/views/TestCase.vue'),
+        path: 'task',
+        name: 'Task',
+        component: () => import('@/views/Task.vue'),
         meta: {
-          title: '用例管理',
+          title: '任务管理',
           requireAuth: true
         }
-      }
-      ,
+      },
       {
-        path: '/user',
+        path: 'testRecord',
+        name: 'TestRecord',
+        component: () => import('@/views/TestRecord.vue'),
+        meta: {
+          title: '运行记录',
+          requireAuth: true
+        }
+      },
+      {
+        path: 'testReport',
+        name: 'TestReport',
+        component: () => import('@/views/TestReport.vue'),
+        meta: {
+          title: '测试报告',
+          requireAuth: true
+        }
+      },
+      {
+        path: 'dataAnalysis/:id?',
+        name: 'DataAnalysis',
+        component: () => import('@/views/DataAnalysis.vue'),
+        meta: {
+          title: '数据分析',
+          requireAuth: true
+        }
+      },
+      {
+        path: 'user',
         name: 'User',
         component: () => import('@/views/User.vue'),
         //配置需要有cookies才可以访问
         meta: {
+          title: '用户管理',
           needAuth: true
         }
-      }
+      },
     ]
   },
   // {

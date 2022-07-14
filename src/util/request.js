@@ -3,7 +3,7 @@ import { Message } from 'element-ui'
 import router from '@/router'
 import * as cookies from '@/util/cookies'
 let request = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: process.env.VUE_APP_BASE_API,
   timeout: 5000
 }
 )

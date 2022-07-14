@@ -68,16 +68,33 @@
         </el-row>
       </div>
     </el-card>
+    <!--编辑对话框-->
+    <el-dialog
+      :visible.sync="editVisible"
+      :title="currentId ? '编辑项目' : '添加项目'"
+      center
+    >
+      <project-edit
+        :id="currentId"
+        @callbackForSave="callbackForSave"
+        @callbackForCancel="callbackForCancel"
+        v-if="editVisible"
+      ></project-edit>
+    </el-dialog>
   </div>
 </template>
+
 <script>
 import Headbar from "@/layout/Headbar.vue";
 import * as projectApi from "@/api/project";
 import * as cookies from "@/util/cookies";
-
+import ProjectEdit from "../components/project/ProjectEdit.vue";
 export default {
   name: "AllProject",
-  components: { Headbar },
+  components: {
+    Headbar,
+    ProjectEdit,
+  },
   data() {
     return {
       projects: [
@@ -85,6 +102,8 @@ export default {
         // { id: 2, name: "项目2" },
         // { id: 3, name: "项目3" },
       ],
+      editVisible: false,
+      currentId: null,
     };
   },
   created() {
@@ -112,6 +131,84 @@ export default {
         }
       });
     },
+    //更多操作下拉菜单事件
+    handleItem(project, cmd) {
+      if (cmd === "edit") {
+        this.showEdit(project.id);
+      } else if (cmd === "delete") {
+        this.remove(project.id);
+      }
+    },
+    //显示详情弹窗
+    showEdit(id) {
+      //设置传递的id
+      this.currentId = id;
+      //显示弹出对话框
+      this.editVisible = true;
+    },
+    //隐藏用户详情弹窗
+    hideEdit() {
+      this.editVisible = false;
+    },
+    //保存成功回调
+    callbackForSave() {
+      //隐藏弹窗
+      this.hideEdit();
+      //重新获取数据列表
+      this.getInitData();
+    },
+    //取消回调
+    callbackForCancel() {
+      //隐藏弹窗
+      this.hideEdit();
+    },
+    //删除
+    remove(id) {
+      this.$confirm("确定删除吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          projectApi.remove(id).then((response) => {
+            if (response.data.code === 0) {
+              //成功提示
+              this.$message({
+                message: "删除成功。",
+                type: "success",
+              });
+              //重新加载数据
+              this.getInitData();
+            } else {
+              //错误提示
+              this.$message({
+                message: response.data.message,
+                type: "warning",
+              });
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+    //选择当前项目
+    selectProject(project) {
+      // 将选中的项目存储到一个全局状态
+      this.$store.commit("setCurrentProject", project);
+      // 跳转
+      this.$router.push("/project");
+    },
+    // //选择当前项目
+    // selectProject(project) {
+    //   let user = cookies.getCurrentUser();
+    //   project.username = user.username;
+    //   this.$store.commit("setCurrentProject", project);
+    //   this.$router.push("/project");
+    // },
     //验证项目操作权限
     checkOperationRight(project) {
       // console.log(project);
@@ -125,13 +222,6 @@ export default {
         result = true;
       }
       return result;
-    },
-    //选择当前项目
-    selectProject(project) {
-      // 将选中的项目存储到一个全局状态
-      this.$store.commit("setCurrentProject", project);
-      // 跳转
-      this.$router.push("/");
     },
   },
 };

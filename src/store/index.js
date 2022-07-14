@@ -96,6 +96,7 @@ export default new Vuex.Store({
     setCopyTestCase(state, copyTestCase) {
       state.copyTestCase = copyTestCase
     },
+    //设置快捷标签列表
     setTagsList(state, tagsList) {
       state.tagsList = tagsList
     },
