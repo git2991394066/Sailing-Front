@@ -14,7 +14,10 @@
     <headbar></headbar>
     <!-- 左侧 -->
     <sidebar></sidebar>
-    <div class="content-box">
+    <div
+      class="content-box"
+      :class="{ 'content-collapse': $store.getters.getCollapse }"
+    >
       <tags></tags>
       <div class="content">
         <transition name="move" mode="out-in">

@@ -16,14 +16,16 @@
       router
     >
       <template v-for="item in items">
-        <el-menu-item
-          :index="item.index"
-          :key="item.index"
-          v-if="checkRight(item.roles)"
-        >
-          <i :class="item.icon"></i>
-          <span slot="title">{{ item.title }}</span>
-        </el-menu-item>
+        <template>
+          <el-menu-item
+            :index="item.index"
+            :key="item.index"
+            v-if="checkRight(item.roles)"
+          >
+            <i :class="item.icon"></i>
+            <span slot="title">{{ item.title }}</span>
+          </el-menu-item>
+        </template>
       </template>
     </el-menu>
   </div>
