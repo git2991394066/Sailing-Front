@@ -195,20 +195,20 @@ export default {
           });
         });
     },
-    //选择当前项目
-    selectProject(project) {
-      // 将选中的项目存储到一个全局状态
-      this.$store.commit("setCurrentProject", project);
-      // 跳转
-      this.$router.push("/project");
-    },
     // //选择当前项目
     // selectProject(project) {
-    //   let user = cookies.getCurrentUser();
-    //   project.username = user.username;
+    //   // 将选中的项目存储到一个全局状态
     //   this.$store.commit("setCurrentProject", project);
+    //   // 跳转
     //   this.$router.push("/project");
     // },
+    //选择当前项目
+    selectProject(project) {
+      let user = cookies.getCurrentUser();
+      project.username = user.username;
+      this.$store.commit("setCurrentProject", project);
+      this.$router.push("/project");
+    },
     //验证项目操作权限
     checkOperationRight(project) {
       // console.log(project);
