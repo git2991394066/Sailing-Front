@@ -77,6 +77,21 @@ export default {
     // //加载初始数据
     // this.login();
   },
+  mounted() {
+    //给window对象绑定keydown事件
+    window.addEventListener("keydown", this.keyDown);
+    //获取记住的用户名
+    const username = window.localStorage.getItem("username");
+    if (username) {
+      this.user.username = username;
+      this.status = true;
+    }
+  },
+  //Vue生命周期销毁钩子
+  destroyed() {
+    //给window对象移除keydown事件
+    window.removeEventListener("keydown", this.keyDown, false);
+  },
   methods: {
     login() {
       // let user = { username: "admin", password: "123456" };
@@ -94,6 +109,12 @@ export default {
           cookies.setCurrentUser(responseData.data);
           // 3.跳转到首页
           this.$router.push("/");
+          //4、如果勾选了记住登录，则设置到localStorage中；否则，移除
+          if (this.status) {
+            window.localStorage.setItem("username", this.user.username);
+          } else {
+            window.localStorage.removeItem("username");
+          }
         } else {
           //登录失败，给出对应错误提示
           this.$message({
@@ -107,6 +128,13 @@ export default {
       // }).catch((err) => {
 
       // });
+    },
+    //按键事件监听
+    keyDown(e) {
+      //如果按下的是回车键，直接登录
+      if (e.keyCode == 13) {
+        this.login();
+      }
     },
   },
 };

@@ -8,3 +8,11 @@ export function login(user) {
     data: user
   })
 }
+//注册
+export function register(user) {
+  return request({
+    url: '/account/register',
+    method: 'post',
+    data: user
+  })
+}

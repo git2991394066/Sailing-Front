@@ -10,5 +10,6 @@ export const requestMethods = [
 ]
 //响应类型
 export const responseTypes = [
-    'JSON'
+    'JSON',
+    'TEXT/HTML'
 ]

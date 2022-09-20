@@ -1,15 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Layout from '@/layout'
 import * as cookies from '@/util/cookies'
+
 Vue.use(VueRouter)
 
 const routes = [
 
-  // {
-  //   path: '/about',
-  //   name: 'About',
-  //   component: () => import('@/views/About.vue')
-  // },
   {
     path: '/login',
     name: 'Login',
@@ -42,20 +39,17 @@ const routes = [
   },
   {
     path: '/',
-    name: 'Layout',
-    component: () => import('@/layout'),
+    component: Layout,
     children: [
       {
         path: 'project',
         name: 'Project',
         component: () => import('@/views/Project.vue'),
-        //配置需要有cookies才可以访问
         meta: {
           title: '项目首页',
-          needAuth: true
+          requireAuth: true
         }
       },
-
       {
         path: 'testCase',
         name: 'TestCase',
@@ -114,53 +108,35 @@ const routes = [
         path: 'user',
         name: 'User',
         component: () => import('@/views/User.vue'),
-        //配置需要有cookies才可以访问
         meta: {
           title: '用户管理',
-          needAuth: true
+          requireAuth: true
         }
-      },
+      }
     ]
-  },
-  // {
-  //   path: '/project',
-  //   name: 'Project',
-  //   component: () => import('@/views/Project.vue')
-  // },
-  // {
-  //   path: '/register',
-  //   name: 'Register',
-  //   component: () => import('@/views/Register.vue')
-  // },
-  // {
-  //   path: '/user',
-  //   name: 'User',
-  //   component: () => import('@/views/User.vue')
-  // }
+  }
 ]
 
 const router = new VueRouter({
-  // mode: 'history',
-  // base: process.env.BASE_URL,
   routes
 })
-//路由前拦截
+
+//通过路由守卫进行客户端权限验证，主要看cookies是否到期
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(item => item.meta.needAuth == true)) {
-    //表示需要进行路由鉴权
-    let currentUser = cookies.getCurrentUser()
-    if (currentUser) {
-      //有登录，路由到下一个页面
+  //根据meta.requiresAuth判断将要导航的页面是否需要进行鉴权；
+  //如果需要，则获取是否已授权，如果没有授权，跳转到login；如果已授权，则继续导航
+  if (to.matched.some(record => record.meta.requireAuth)) {
+    let user = cookies.getCurrentUser() //从cookies获取当前登录用户
+    if (user !== null && user !== undefined && user.username) {
       next()
     } else {
-      //未登录，跳转到登录
       next({
-        path: '/login',
-        redirect: to.fullPath
+        path: '/login',// 未登录则跳转至login页面
+        query: { redirect: to.fullPath }// 登陆成功后回到当前页面时使用，这里传值给login页面，to.fullPath为当前点击的页面
       })
     }
   } else {
-    next()
+    next() // 确保一定要调用 next()
   }
 })
 

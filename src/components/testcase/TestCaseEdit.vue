@@ -560,6 +560,20 @@
               />
               <el-empty description="内容为空" v-else></el-empty>
             </el-tab-pane>
+            <!-- v1.0.1 增加响应时间和大小的展示 -->
+            <el-tab-pane label="响应时间和大小">
+              <el-descriptions title="响应时间和大小">
+                <el-descriptions-item label="响应时间/ms">{{
+                  responseData.responseTimeMs
+                }}</el-descriptions-item>
+                <el-descriptions-item label="响应时间/s">{{
+                  responseData.responseTimeS
+                }}</el-descriptions-item>
+                <el-descriptions-item label="响应大小content-length">{{
+                  responseData.responseContentLength
+                }}</el-descriptions-item>
+              </el-descriptions>
+            </el-tab-pane>
           </el-tabs>
         </el-card>
       </el-col>
@@ -862,6 +876,12 @@ export default {
           this.responseData.headers = response.data.data.headers;
           this.responseData.cookies = response.data.data.cookies;
           this.responseData.requestInfo = requestInfo;
+
+          //v1.0.1 增加响应时间和大小的展示
+          this.responseData.responseTimeMs = response.data.data.responseTimeMs;
+          this.responseData.responseTimeS = response.data.data.responseTimeS;
+          this.responseData.responseContentLength =
+            response.data.data.contentLength;
         } else {
           //错误提示
           this.$message({
