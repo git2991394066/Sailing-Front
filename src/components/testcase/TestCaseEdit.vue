@@ -563,15 +563,30 @@
             <!-- v1.0.1 增加响应时间和大小的展示 -->
             <el-tab-pane label="响应时间和大小">
               <el-descriptions title="响应时间和大小">
-                <el-descriptions-item label="响应时间/ms">{{
-                  responseData.responseTimeMs
-                }}</el-descriptions-item>
-                <el-descriptions-item label="响应时间/s">{{
-                  responseData.responseTimeS
-                }}</el-descriptions-item>
-                <el-descriptions-item label="响应大小content-length">{{
-                  responseData.responseContentLength
-                }}</el-descriptions-item>
+                <el-descriptions-item
+                  label="响应时间/ms "
+                  v-if="responseData.responseTimeMs"
+                  >{{ responseData.responseTimeMs }}</el-descriptions-item
+                >
+                <el-descriptions-item
+                  label="响应时间/s"
+                  v-if="responseData.responseTimeS"
+                  >{{ responseData.responseTimeS }}</el-descriptions-item
+                >
+                <el-descriptions-item
+                  label="响应大小content-length"
+                  v-if="responseData.responseContentLength"
+                  >{{
+                    responseData.responseContentLength
+                  }}</el-descriptions-item
+                >
+                <el-descriptions-item
+                  label="响应大小/kb"
+                  v-if="responseData.responseContentLength"
+                  >{{
+                    responseData.responseContentLength / 1024
+                  }}</el-descriptions-item
+                >
               </el-descriptions>
             </el-tab-pane>
           </el-tabs>
