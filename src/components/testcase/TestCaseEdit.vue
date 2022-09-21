@@ -582,9 +582,17 @@
                 >
                 <el-descriptions-item
                   label="响应大小/kb"
-                  v-if="responseData.responseContentLength"
+                  v-if="responseData.responseContentLength / 1024"
                   >{{
-                    responseData.responseContentLength / 1024
+                    (responseData.responseContentLength / 1024) | numFilter
+                  }}</el-descriptions-item
+                >
+                <el-descriptions-item
+                  label="响应大小/m"
+                  v-if="responseData.responseContentLength / 1024 / 1024"
+                  >{{
+                    (responseData.responseContentLength / 1024 / 1024)
+                      | numFilter
                   }}</el-descriptions-item
                 >
               </el-descriptions>
@@ -645,6 +653,19 @@ export default {
       return this.$store.getters.getCurrentProject;
     },
   },
+  filters: {
+    // 保留小数点后三位的过滤器，尾数四舍五入
+    numFilter(value) {
+      // 截取当前数据到小数点后两位
+
+      let realVal = Number(value).toFixed(3);
+
+      // num.toFixed(3)获取的是字符串
+
+      return Number(realVal);
+    },
+  },
+
   watch: {
     //监听用例切换
     testCase() {
