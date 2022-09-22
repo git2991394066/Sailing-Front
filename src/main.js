@@ -9,6 +9,11 @@ import 'element-ui/lib/theme-chalk/index.css';
 import * as echarts from 'echarts'
 //导入自定义的样式
 import '@/assets/css/icon.css';
+import dofilters from '@/util/dofilters';
+
+for (let key in dofilters) {
+    Vue.filter(key, dofilters[key]);
+}
 Vue.config.productionTip = false
 //添加ElementUI
 Vue.use(ElementUI)
@@ -23,5 +28,6 @@ Vue.filter('percent', function (data) {
 new Vue({
   router,
   store,
+  dofilters,
   render: h => h(App)
 }).$mount('#app')
