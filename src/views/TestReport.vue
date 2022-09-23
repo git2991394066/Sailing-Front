@@ -88,6 +88,7 @@
           </el-divider>
           <el-table
             :data="testSuit.testCaseResults"
+            stripe
             style="width: 100%"
             size="mini"
           >
@@ -96,14 +97,52 @@
                 <pre>{{ props.row.exception }}</pre>
               </template>
             </el-table-column>
+            <el-table-column prop="testCase.name" label="用例名" min-width="80">
+            </el-table-column>
+            <el-table-column prop="inf.path" label="接口地址" min-width="180">
+            </el-table-column>
+            <!-- v1.0.1报告中用例详细增加每个用例响应时间和大小 -->
+            <!-- startTime -->
             <el-table-column
-              prop="testCase.name"
-              label="用例名"
-              min-width="180"
+              prop="userDefinedResponse"
+              label="响应大小/byte"
+              min-width="100"
             >
+              <template slot-scope="scope">
+                {{
+                  scope.row.userDefinedResponse
+                    | contentLengthFilter
+                    | numbersFilter
+                }}
+              </template>
             </el-table-column>
-            <el-table-column prop="inf.path" label="接口地址" min-width="280">
+            <el-table-column
+              prop="userDefinedResponse"
+              label="响应时间/ms"
+              min-width="100"
+            >
+              <template slot-scope="scope">
+                {{
+                  scope.row.userDefinedResponse
+                    | responseTimeMsFilter
+                    | numbersFilter
+                }}
+              </template>
             </el-table-column>
+            <el-table-column
+              prop="userDefinedResponse"
+              label="响应时间/s"
+              min-width="100"
+            >
+              <template slot-scope="scope">
+                {{
+                  scope.row.userDefinedResponse
+                    | responseTimeSFilter
+                    | numbersFilter
+                }}
+              </template>
+            </el-table-column>
+            <!-- 隔行 -->
             <el-table-column
               prop="inf.requestMethod"
               label="请求方法"
@@ -218,7 +257,7 @@
                 <i style="font-weight: bold">调试结束</i><br />
               </div>
               <div>
-                <i style="font-weight: bold">响应长度</i
+                <i>响应长度(Content-Length):&nbsp;&nbsp;</i
                 >{{
                   testCaseResult.userDefinedResponse
                     | contentLengthFilter
@@ -226,7 +265,7 @@
                 }}
               </div>
               <div>
-                <i style="font-weight: bold">响应时间/ms</i
+                <i>响应时间/ms:&nbsp;&nbsp;</i
                 >{{
                   testCaseResult.userDefinedResponse
                     | responseTimeMsFilter
@@ -234,7 +273,7 @@
                 }}
               </div>
               <div>
-                <i style="font-weight: bold">响应时间/s</i
+                <i>响应时间/s:&nbsp;&nbsp;</i
                 >{{
                   testCaseResult.userDefinedResponse
                     | responseTimeSFilter
@@ -322,20 +361,8 @@ export default {
           let result = response.data;
           this.testReport = result.data;
           this.testResult = JSON.parse(this.testReport.result || "{}");
-          //this.userDefinedResponse=this.testResult.userDefinedResponse;
-          // console.log(Object.values(this.testResult));
-          // //把字符串中所有\\"换成"
-          // // let reg = new RegExp('\\"', "g"); //g代表全部
-          // let newMsg = JSON.stringify(
-          //   this.testResult.userDefinedResponse
-          // ).replace(/'\\"'/g, '"');
-          // console.log(newMsg);
-
-          // let newMsg = this.testResult.userDefinedResponse.replace(
-          //   /'\\"'/g,
-          //   '"'
-          // );
-          // console.log(newMsg);
+          // 调试响应
+          console.log(response);
         });
       }
     },
