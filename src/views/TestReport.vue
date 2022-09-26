@@ -99,19 +99,32 @@
             </el-table-column>
             <el-table-column prop="testCase.name" label="用例名" min-width="80">
             </el-table-column>
-            <el-table-column prop="inf.path" label="接口地址" min-width="180">
+            <el-table-column prop="inf.path" label="接口地址" min-width="220">
             </el-table-column>
             <!-- v1.0.1报告中用例详细增加每个用例响应时间和大小 -->
             <!-- startTime -->
             <el-table-column
               prop="userDefinedResponse"
-              label="响应大小/byte"
-              min-width="100"
+              label="响应大小/Bytes"
+              min-width="80"
             >
               <template slot-scope="scope">
                 {{
                   scope.row.userDefinedResponse
-                    | contentLengthFilter
+                    | responseBytesFilter
+                    | numbersFilter
+                }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="userDefinedResponse"
+              label="响应大小/KB"
+              min-width="80"
+            >
+              <template slot-scope="scope">
+                {{
+                  scope.row.userDefinedResponse
+                    | responseKBFilter
                     | numbersFilter
                 }}
               </template>
@@ -119,7 +132,7 @@
             <el-table-column
               prop="userDefinedResponse"
               label="响应时间/ms"
-              min-width="100"
+              min-width="80"
             >
               <template slot-scope="scope">
                 {{
@@ -132,7 +145,7 @@
             <el-table-column
               prop="userDefinedResponse"
               label="响应时间/s"
-              min-width="100"
+              min-width="80"
             >
               <template slot-scope="scope">
                 {{
@@ -257,10 +270,18 @@
                 <i style="font-weight: bold">调试结束</i><br />
               </div>
               <div>
-                <i>响应长度(Content-Length):&nbsp;&nbsp;</i
+                <i>响应长度/Bytes:&nbsp;&nbsp;</i
                 >{{
                   testCaseResult.userDefinedResponse
-                    | contentLengthFilter
+                    | responseBytesFilter
+                    | numbersFilter
+                }}
+              </div>
+              <div>
+                <i>响应长度/KB:&nbsp;&nbsp;</i
+                >{{
+                  testCaseResult.userDefinedResponse
+                    | responseKBFilter
                     | numbersFilter
                 }}
               </div>
@@ -318,8 +339,14 @@ export default {
     // var str = 'sdabc:"sads",asdas,"abc":"d"}asdasdasd"abc":232]';
     // var reg = /abc(.*?)(?=[\]\},])/g;
     // str.match(reg); // 返回['abc:"sads"', 'abc":"d"', 'abc":232']
-    contentLengthFilter(value) {
-      const reg = RegExp(/Content-Length(.*?)(?=[}])/g);
+    responseBytesFilter(value) {
+      const reg = RegExp(/responseBytes(.*?)(?=[}])/g);
+      let realVal = value.match(reg);
+      // console.log(realVal);
+      return realVal;
+    },
+    responseKBFilter(value) {
+      const reg = RegExp(/responseKB(.*?)(?=[}])/g);
       let realVal = value.match(reg);
       // console.log(realVal);
       return realVal;
