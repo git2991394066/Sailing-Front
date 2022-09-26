@@ -570,26 +570,26 @@
                 >
                 <el-descriptions-item
                   label="响应时间/s"
-                  v-if="responseData.responseTimeS"
+                  v-if="responseData.responseTimeS >= 1"
                   >{{ responseData.responseTimeS }}</el-descriptions-item
                 >
                 <el-descriptions-item
-                  label="响应大小content-length"
+                  label="响应大小/Bytes"
                   v-if="responseData.responseContentLength"
                   >{{
                     responseData.responseContentLength
                   }}</el-descriptions-item
                 >
                 <el-descriptions-item
-                  label="响应大小/kb"
-                  v-if="responseData.responseContentLength / 1024"
+                  label="响应大小/KB"
+                  v-if="responseData.responseContentLength / 1024 >= 1"
                   >{{
                     (responseData.responseContentLength / 1024) | numFilter
                   }}</el-descriptions-item
                 >
                 <el-descriptions-item
-                  label="响应大小/m"
-                  v-if="responseData.responseContentLength / 1024 / 1024"
+                  label="响应大小/M"
+                  v-if="responseData.responseContentLength / 1024 / 1024 >= 1"
                   >{{
                     (responseData.responseContentLength / 1024 / 1024)
                       | numFilter

@@ -321,19 +321,19 @@ export default {
     contentLengthFilter(value) {
       const reg = RegExp(/Content-Length(.*?)(?=[}])/g);
       let realVal = value.match(reg);
-      console.log(realVal);
+      // console.log(realVal);
       return realVal;
     },
     responseTimeSFilter(value) {
       const reg = RegExp(/responseTimeS(.*?)(?=[,])/g);
       let realVal = value.match(reg);
-      console.log(realVal);
+      // console.log(realVal);
       return realVal;
     },
     responseTimeMsFilter(value) {
       const reg = RegExp(/responseTimeMs(.*?)(?=[,])/g);
       let realVal = value.match(reg);
-      console.log(realVal);
+      // console.log(realVal);
       return realVal;
     },
     // //搜索字符串内的数字并返回浮点数字
@@ -341,7 +341,7 @@ export default {
     // numbersFilter(value) {
     //   const reg = RegExp(/\d+/g);
     //   let realVal = reg.exec(value);
-    //   console.log(realVal);
+    //   // console.log(realVal);
     //   return parseFloat(realVal);
     // },
   },
@@ -361,8 +361,8 @@ export default {
           let result = response.data;
           this.testReport = result.data;
           this.testResult = JSON.parse(this.testReport.result || "{}");
-          // 调试响应
-          console.log(response);
+          // // 调试响应
+          // console.log(response);
         });
       }
     },
